@@ -226,11 +226,14 @@ NSString * const TCHTTPStatusCode = @"httpStatus";
 
     TCLog(@"%@ | %.2f%% - Received: %ld - Total: %ld",
           self.fileName,
-          (float) _receivedDataLength / self.expectedDataLength * 100
+          (float) _receivedDataLength / self.expectedDataLength * 100,
           (long)self.receivedDataLength, (long)self.expectedDataLength);
     
     if (self.receivedDataBuffer.length > kBufferSize && self.file) {
-        [self.file writeData:self.receivedDataBuffer];
+        unsigned long long fileSize = [[NSFileManager defaultManager] attributesOfItemAtPath:self.pathToFile error:nil].fileSize;
+        if (self.expectedDataLength > fileSize) {
+            [self.file writeData:self.receivedDataBuffer];
+        }
         [self.receivedDataBuffer setData:nil];
     }
     
@@ -248,7 +251,10 @@ NSString * const TCHTTPStatusCode = @"httpStatus";
 
 - (void)connectionDidFinishLoading:(NSURLConnection*)connection
 {
-    [self.file writeData:self.receivedDataBuffer];
+    unsigned long long fileSize = [[NSFileManager defaultManager] attributesOfItemAtPath:self.pathToFile error:nil].fileSize;
+    if (self.expectedDataLength > fileSize) {
+        [self.file writeData:self.receivedDataBuffer];
+    }
     [self.receivedDataBuffer setData:nil];
     
     [self notifyFromCompletionWithSuccess:YES pathToFile:self.pathToFile];
