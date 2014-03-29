@@ -27,7 +27,7 @@ NSString * const TCHTTPStatusCode = @"httpStatus";
 // Speed rate and remaining time
 @property (nonatomic, strong) NSTimer *speedTimer;
 @property (nonatomic, strong) NSMutableArray *samplesOfDownloadedBytes;
-@property (nonatomic, assign) uint64_t expectedDataLength;
+@property (nonatomic, assign) long long expectedDataLength;
 @property (nonatomic, assign) uint64_t receivedDataLength;
 @property (nonatomic, assign, readwrite) NSInteger speedRate;
 @property (nonatomic, assign, readwrite) NSInteger remainingTime;
